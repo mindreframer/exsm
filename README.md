@@ -43,7 +43,7 @@ end
 Create a field `state` (or a name of your choice to be defined later) for the
 module you want to have a state machine, make sure you have declared it as part
 of you `defstruct`, or if it is a Phoenix model make sure you add it to the `schema`,
-as a `string`,  and to the `changeset/2`:
+as a `string`, and to the `changeset/2`:
 
 ```elixir
 defmodule YourProject.User do
@@ -66,7 +66,6 @@ end
 Declare the states as an argument when importing `Exsm` on the module that
 will control your states transitions.
 
-
 ### State Machine Module
 
 It's strongly recommended that you create a new module for your State Machine
@@ -84,15 +83,12 @@ Exsm expects a `Keyword` as argument with the keys `field`, `states` and `transi
 ```elixir
 defmodule YourProject.UserStateMachine do
   use Exsm,
-    # This is a way to define a custom field, if not defined
-    # it will expect the default `state` field in the struct
-    field: :custom_state_name,
-    # The first state declared will be considered
-    # the initial state.
-    states: ["created", "partial", "complete", "canceled"],
+    field: :state,
+    states: ["created", "partial", "completed", "canceled", "paused", "restarted"],
     transitions: %{
-      "created" =>  ["partial", "complete"],
+      "created" => ["partial", "completed"],
       "partial" => "completed",
+      "completed" => "restarted",
       "*" => "canceled"
     }
 end
@@ -101,22 +97,33 @@ end
 ### Supported Declaration Types
 
 #### One - One
+
 Define transition from one state to another state.
+
 ```elixir
 "a" => "b"
 ```
+
 #### One - Many
+
 Define transition from one state to multiple states.
+
 ```elixir
 "a" => ["b", "c"]
 ```
+
 #### Many - One
+
 Define transition from Multiple states to a single state.
+
 ```elixir
 ["a", "b"] => "c"
 ```
+
 #### Many - Many
+
 Define transition from multiple states to multiple other states.
+
 ```elixir
 # This is equivalent to "a" => ["c", "d", "e"] and "b" => ["c", "d", "e"]
 ["a", "b"] => ["c", "d", "e"]
@@ -128,7 +135,7 @@ The wildcards can be used to easily define transition from/to all defined
 states to a set of states.
 
 - **`"*"`**: This wildcard can be used when you want to define a transtition from all
-defined states to a state or a subset including all self transitions.
+  defined states to a state or a subset including all self transitions.
 
 - **`"^"`**: It serves a similar purpose as `"*"` but excludes all self transitions.
 
@@ -150,6 +157,7 @@ To transit a struct into another state, you just need to
 call `Exsm.transition_to/3`.
 
 ### `Exsm.transition_to/3`
+
 It takes three arguments:
 
 - `struct`: The `struct` you want to transit to another state.
@@ -176,6 +184,7 @@ If you want to check if a transition is valid without actually performing
 the transition, you can do so using `Exsm.valid_transition?/3`
 
 ### `Exsm.valid_transition?/3`
+
 It takes three arguments:
 
 - `struct`: The `struct` you want to transit to another state.
@@ -201,6 +210,7 @@ Additionally `before_transition/3` can be used as a guard to stop the transition
 from occuring if a certain pre-condition or a side effect fails.
 
 Callbacks are executed in the following order during a transition
+
 1. `before_transition/3`
 2. `persist/3`
 3. `log_transition/3`
@@ -219,8 +229,9 @@ the transition started and a `next_state` where it will transit to. Use the seco
 and the third arguments to pattern match the previous and next states.
 
 `before_transition/3` should return one of the following values:
-  - `{:error, "cause"}`: Transition won't be allowed in this case.
-  - `{:ok, struct}`: Transition will be allowed and the struct will be passed on to other callbacks
+
+- `{:error, "cause"}`: Transition won't be allowed in this case.
+- `{:ok, struct}`: Transition will be allowed and the struct will be passed on to other callbacks
 
 #### Example:
 
@@ -253,6 +264,7 @@ Exsm.transition_to(blocked_struct, TestStateMachineWithGuard, "completed")
 ```
 
 ### Persist State
+
 To persist the struct and the state transition automatically, instead of having
 Exsm changing the struct itself, you can declare a `persist/3` function on
 the state machine module.
@@ -282,11 +294,12 @@ end
 ```
 
 ### Logging Transitions
+
 To log/persist the transitions itself Exsm provides a callback
 `log_transitions/3` that will be called on every transition.
 
 It will receive the unchanged `struct` as the first argument, the `prev_state`
- as second and the `next state` as the third one, after every state transition.
+as second and the `next state` as the third one, after every state transition.
 This function will be called between the before and after transition callbacks
 and after the persist function.
 
@@ -346,4 +359,4 @@ end
 
 ## Credits
 
-* [Machinery](https://github.com/joaomdmoura/machinery) - State machine thin layer for structs
+- [Machinery](https://github.com/joaomdmoura/machinery) - State machine thin layer for structs
