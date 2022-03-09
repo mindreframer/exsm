@@ -7,8 +7,6 @@ defmodule Exsm.Transitions do
 
   alias Exsm.Transition
 
-  @invalid_transitions_error "Invalid transitions defined"
-
   @doc false
   def transition_to(struct, state_machine_module, next_state) do
     initial_state = state_machine_module._exsm_initial_state()
@@ -43,7 +41,8 @@ defmodule Exsm.Transitions do
             {:error, reason}
         end
       else
-        {:error, "Transition from: #{prev_state}, to: #{next_state} isn't declared."}
+        {:error,
+         "Transition from #{inspect(prev_state)} to #{inspect(next_state)} isn't declared"}
       end
 
     response
@@ -97,7 +96,7 @@ defmodule Exsm.Transitions do
     Enum.each(value, &validate_state!(&1, states))
   end
 
-  defp validate_state!(_value, _states), do: raise(@invalid_transitions_error)
+  defp validate_state!(_value, _states), do: raise("Invalid transitions defined")
 
   defp reduce_transitions(transitions, states, key, acc) do
     cond do

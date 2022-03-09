@@ -25,7 +25,7 @@ defmodule Exsm.ReadmeSamplesTest do
       user = %{state: "created"}
 
       assert Exsm.transition_to(user, UserStateMachine, "restarted") ==
-               {:error, "Transition from: created, to: restarted isn't declared."}
+               {:error, "Transition from \"created\" to \"restarted\" isn't declared"}
     end
   end
 end
