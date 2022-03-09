@@ -1,12 +1,12 @@
 ExUnit.start()
 
 # Load support modules
-Code.load_file("test/support/test_struct.exs")
-Code.load_file("test/support/test_default_field_struct.exs")
-Code.load_file("test/support/test_state_machine.exs")
-Code.load_file("test/support/test_state_machine_with_guard.exs")
-Code.load_file("test/support/test_state_machine_default_field.exs")
-Code.load_file("test/support/test_repo.exs")
+Code.require_file("test/support/test_struct.exs")
+Code.require_file("test/support/test_default_field_struct.exs")
+Code.require_file("test/support/test_state_machine.exs")
+Code.require_file("test/support/test_state_machine_with_guard.exs")
+Code.require_file("test/support/test_state_machine_default_field.exs")
+Code.require_file("test/support/test_repo.exs")
 
 defmodule ExsmTest.Helper do
   alias ExsmTest.TestRepo
