@@ -91,7 +91,7 @@ defmodule ExsmTest.TransitionTest do
     }
 
     assert_raise RuntimeError,
-                 "Transition is defined but corresponding state is not declared",
+                 "Transition is defined but corresponding state is not declared: \"d\" not in [\"a\", \"b\", \"c\"]",
                  fn ->
                    Transitions.parse_transitions(transitions, states)
                  end
@@ -101,7 +101,7 @@ defmodule ExsmTest.TransitionTest do
     }
 
     assert_raise RuntimeError,
-                 "Transition is defined but corresponding state is not declared",
+                 "Transition is defined but corresponding state is not declared: \"e\" not in [\"a\", \"b\", \"c\"]",
                  fn ->
                    Transitions.parse_transitions(transitions, states)
                  end

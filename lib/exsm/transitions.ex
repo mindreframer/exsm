@@ -89,7 +89,7 @@ defmodule Exsm.Transitions do
 
   defp validate_state!(value, states) when is_binary(value) do
     unless value in states do
-      raise "Transition is defined but corresponding state is not declared"
+      raise "Transition is defined but corresponding state is not declared: #{inspect(value)} not in #{inspect(states)}"
     end
   end
 
